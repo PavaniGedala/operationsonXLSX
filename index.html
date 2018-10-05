@@ -1,0 +1,91 @@
+<html>
+   <head>
+      <title>Find Region</title>
+      <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" type="text/css" />
+      <link rel="stylesheet" href="css/style.css" type="text/css" />
+   </head>
+   <body>
+      <div class="dashboard">
+         <div class="main-box">
+            <div class="auto-container">
+               <div class="outer-container clearfix container">
+                  <!--Logo Box-->
+                  <div class="top-box row">
+                     <div class="logo col-sm-4"><a href="#">
+                        <img src="images/images.jpeg" alt=""></a>
+                     </div>
+                  </div>
+               </div>
+            </div>
+         </div>
+         <br><br><br><br>
+         <div class = "col-sm-4"></div>
+         <div class="container  col-sm-4" style="margin-bottom:100px;margin-top:30px;">
+            <form id="uploadForm"
+               enctype="multipart/form-data"
+               action="/api/file"
+               method="post">
+               <table>
+                  <tr>
+                     <td>
+                        <input type="file" name="userfile" />
+                     </td>
+                     <td>
+                        <input type="submit" value="Upload File" name="submit">
+                     </td>
+                  </tr>
+                  <tr>
+                     <td colspan ="2">
+                        <center><span id = "status"></span></center>
+                     </td>
+                  </tr>
+                  <tr>
+                     <td colspan ="2">
+                        <center><a class="target" href="#">Download</a></center>
+                     </td>
+                  </tr>
+               </table>
+            </form>
+         </div>
+         <div class="footer" style="position: fixed;left: 0;bottom: 0;width: 100%;background-color:#000000;color: white;height:50px;padding:8px;text-align:justify;">
+            <center>
+               <div style="color:#ffffff;">2018 &copy; Absentia Virtual Reality Private Limited.</div>
+            </center>
+         </div>
+      </div>
+   </body>
+   <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script>
+   <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.form/3.51/jquery.form.min.js"></script>
+   <script>
+      $(document).ready(function() {
+      var ws = new WebSocket('ws://thesamplexlsxapp.mybluemix.net');
+      
+      ws.onmessage = function (event) {
+          console.log(event.data);
+       console.log(window.location.hostname);
+       $('a.target').attr('href', event.data);
+          };
+      
+      
+         $('#uploadForm').submit(function() {
+       $("#status").empty().text("File is uploading...");
+      
+            $(this).ajaxSubmit({
+                error: function(xhr) {
+				alert(xhr);
+                  status('Error: ' + xhr.status);
+				  alert("Error in Uploading.");
+                },
+      
+                success: function(response) {
+      			console.log(response)
+      			$("#status").empty().text(response);
+                ws.send('file uploaded');
+                }
+      });
+      
+      return false;
+        });    
+      });
+   </script>
+</html>
